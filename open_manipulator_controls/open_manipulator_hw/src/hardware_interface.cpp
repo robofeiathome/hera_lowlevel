@@ -163,30 +163,6 @@ bool HardwareInterface::loadDynamixels(void)
 bool HardwareInterface::initDynamixels(void)
 {
   const char* log;
-
-  for (auto const& dxl:dynamixel_)
-  {
-    dxl_wb_->torqueOff((uint8_t)dxl.second);
-
-    for (auto const& info:dynamixel_info_)
-    {
-      if (dxl.first == info.first)
-      {
-        if (info.second.item_name != "ID" && info.second.item_name != "Baud_Rate")
-        {
-          bool result = dxl_wb_->itemWrite((uint8_t)dxl.second, info.second.item_name.c_str(), info.second.value, &log);
-          if (result == false)
-          {
-            ROS_ERROR("%s", log);
-            ROS_ERROR("Failed to write value[%d] on items[%s] to Dynamixel[Name : %s, ID : %d]", info.second.value, info.second.item_name.c_str(), dxl.first.c_str(), dxl.second);
-            return false;
-          }
-        }
-      }
-    }
-  }
-
-  // Torque On after setting up all servo
   for (auto const& dxl:dynamixel_)
     dxl_wb_->torqueOn((uint8_t)dxl.second);
 
